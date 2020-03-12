@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>test01</title>
+    <script src="asset/js/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <p>{{message}}</p>
+      <input type="text" v-model="inputVal" placeholder="请输入你的待办项" />
+      <button @click="submitInupt">提交</button>
+      <ul>
+        <!-- <li v-for="(item,index) in todoList" @click="delItem(index)">{{item}}</li> -->
+        <todo-item v-for="(item,index) in todoList" :item="item" :index="index" @del="delItem"></todo-item>
+      </ul>
+    </div>
+    <script>
+      Vue.component('TodoItem',{
+          props: ['item','index'],
+          template:'<li @click="handleItemClick">{{item}}</li>',
+          methods:{
+            handleItemClick(){
+                this.$emit('del',this.index);
+            }
+          }
+      });
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: 'new vue demo is here.',
+          inputVal: '',
+          todoList: [],
+        },
+        component:{
+            'todo-item': 'TodoItem',
+        },
+        methods: {
+            submitInupt(){
+                if(!this.inputVal){
+                    alert('待办项不能为空');
+                }else{
+                    this.todoList.push(this.inputVal);
+                    this.inputVal = '';
+                }
+            },
+            delItem(idx){
+                var delTip = confirm('是否已完成该待办项');
+                if(delTip){
+                    this.todoList.splice(idx,1);
+                }
+            }
+        }
+      });
+      //   setTimeout(function(){
+      //       app.$data.message = "blue"; // 通过更改挂载实例的数据更改页面内容
+      //   },2000)
+    </script>
+  </body>
+</html>
