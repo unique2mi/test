@@ -4,16 +4,44 @@
     <meta charset="UTF-8" />
     <title>test01</title>
     <script src="asset/js/vue.js"></script>
+    <style>
+        .active{
+            color: red;
+        }
+    </style>
   </head>
   <body>
     <div id="app">
-      <p>{{message}}</p>
+      <!--列表渲染in/of，key：唯一标识,不能通过下标来改变值-->
+      <!--1.push,pop,shift,unshift,splice,sort,reverse；2.改变数据的引用;3.Vue.set(app.todoList,1,'hello')-->
+      <!--template:模版占位符-->
+      <!--对象循环：item[键值],key[键名],index,更改值(已有值可以app.userInfo.from='US'改变，如果没有则要：)1.要改整个对象的引用；2.set:Vue.set(app.userInfo,'address','sz')
+"sz"-->
+      <template v-for='(item,key,index) of userInfo'>
+          <div>{{item}}</div>
+          <div>{{ key + '-' + index}}</div>
+      </template>
+      <todo-item v-for="(item,index) of todoList" :item="item" :index="index" @del="delItem"></todo-item>
+      <!--插值表达式-->
+      <p>{{message + ' thank you'}}</p>
+      <div v-text="date + message"></div>
+      <!--会转义-->
+      <div v-html="date + '111'"></div>
+      <div>{{jobDetail}}</div>
+      <div>{{fullName}}</div>
+      <!-- <div :class="{active: active}"@click="handleDivClick">{{jobTest}}</div> -->
+      <!--多个classname-->
+      <div :class="[active,fullName]" :style="styleObj" @click="handleDivClick">{{jobTest}}</div>
       <input type="text" v-model="inputVal" placeholder="请输入你的待办项" />
       <button @click="submitInupt">提交</button>
       <ul>
         <!-- <li v-for="(item,index) in todoList" @click="delItem(index)">{{item}}</li> -->
         <todo-item v-for="(item,index) in todoList" :item="item" :index="index" @del="delItem"></todo-item>
       </ul>
+      <!--if,else要紧接在一起,vue会尝试复用原有元素，所以可以给元素标签+key值-->
+      <div v-if="isShow">看到啦</div>
+      <div v-else>上面的看不到啦</div>
+      <div v-show="isShow">看到啦</div>
     </div>
     <script>
       Vue.component('TodoItem',{
@@ -23,7 +51,7 @@
             handleItemClick(){
                 this.$emit('del',this.index);
             }
-          }
+          },
       });
       var app = new Vue({
         el: '#app',
@@ -31,11 +59,93 @@
           message: 'new vue demo is here.',
           inputVal: '',
           todoList: [],
+          name: 'miki',
+          job: 'worker',
+          fullName: 'mikiworker',
+        //   date: new Date(),
+          date: '<h1>you see you</h1>',
+          active: '',
+          styleObj:{
+              color: 'blue',
+              fontSize: '20px',
+          },
+          isShow: false,
+          userInfo:{
+              name: 'mi',
+              from: 'GDSZ',
+              language: 'Chinese',
+          }
         },
         component:{
             'todo-item': 'TodoItem',
         },
-        methods: {
+        computed:{// 计算属性:通过{{jobDetail}}即可使用，有缓存机制，应用到的值更改后才会调用计算
+            jobDetail(){
+                return this.name  + ' is a ' + this.job;
+            },
+            // 计算属性的getter和setter
+            jobTest: {
+                get(){
+                    return this.name  + ' ' + this.job;
+                },
+                set(value){
+                    var arr = value.split(' ');
+                    this.name = arr[0];
+                    this.job = arr[1];
+                }
+            },
+        },
+        watch:{// 侦听
+            name(){
+                this.fullName = this.name + this.job;
+            },
+            job(){
+                this.fullName = this.name + this.job;
+            }
+        },
+        // // 生命周期
+        // beforeCreate: function(){
+        //     console.log('beforeCreate');
+        //     console.log(this.$el);
+        //     console.log(this.$data);
+        // },
+        // created: function(){
+        //     console.log('created');
+        //     console.log(this.$el);
+        //     console.log(JSON.stringify(this.$data));
+        // },
+        // beforeMount: function(){
+        //     console.log('beforeMount');
+        //     console.log(this.$el);
+        //     this.$data.message = 'blue';
+        //     console.log(JSON.stringify(this.$data));
+        // },
+        // mounted: function(){
+        //     console.log('mounted');
+        //     console.log(this.$el);
+        //     console.log(JSON.stringify(this.$data));
+        // },
+        // beforeDestroy: function(){
+        //     console.log('beforeDestroy');
+        //     console.log(this.$el);
+        //     console.log(this.$data);
+        // },
+        // destroyed: function(){
+        //     console.log('destroy');
+        //     console.log(this.$el);
+        //     console.log(this.$data);
+        // },
+        // beforeUpdate: function(){
+        //     console.log('beforeUpdate');
+        //     console.log(this.$el);
+        //     console.log(this.$data);
+        // },
+        // updated: function(){
+        //     console.log('updated');
+        //     console.log(this.$el);
+        //     console.log(this.$data);
+        // },
+        methods: { // 没有缓存，会重新执行
             submitInupt(){
                 if(!this.inputVal){
                     alert('待办项不能为空');
@@ -49,6 +159,10 @@
                 if(delTip){
                     this.todoList.splice(idx,1);
                 }
+            },
+            handleDivClick(){
+                // this.active = !this.active;
+                this.active = this.active === '' ? 'active' : '';
             }
         }
       });
