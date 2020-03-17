@@ -17,31 +17,37 @@
       <!--template:模版占位符-->
       <!--对象循环：item[键值],key[键名],index,更改值(已有值可以app.userInfo.from='US'改变，如果没有则要：)1.要改整个对象的引用；2.set:Vue.set(app.userInfo,'address','sz')
 "sz"-->
-      <template v-for='(item,key,index) of userInfo'>
+      <!-- <template v-for='(item,key,index) of userInfo'>
           <div>{{item}}</div>
           <div>{{ key + '-' + index}}</div>
       </template>
-      <todo-item v-for="(item,index) of todoList" :item="item" :index="index" @del="delItem"></todo-item>
+      <todo-item v-for="(item,index) of todoList" :item="item" :index="index" @del="delItem"></todo-item> -->
       <!--插值表达式-->
-      <p>{{message + ' thank you'}}</p>
-      <div v-text="date + message"></div>
+      <!-- <p>{{message + ' thank you'}}</p>
+      <div v-text="date + message"></div> -->
       <!--会转义-->
-      <div v-html="date + '111'"></div>
+      <!-- <div v-html="date + '111'"></div>
       <div>{{jobDetail}}</div>
-      <div>{{fullName}}</div>
+      <div>{{fullName}}</div> -->
       <!-- <div :class="{active: active}"@click="handleDivClick">{{jobTest}}</div> -->
       <!--多个classname-->
-      <div :class="[active,fullName]" :style="styleObj" @click="handleDivClick">{{jobTest}}</div>
+      <!-- <div :class="[active,fullName]" :style="styleObj" @click="handleDivClick">{{jobTest}}</div>
       <input type="text" v-model="inputVal" placeholder="请输入你的待办项" />
       <button @click="submitInupt">提交</button>
-      <ul>
+      <ul> -->
         <!-- <li v-for="(item,index) in todoList" @click="delItem(index)">{{item}}</li> -->
-        <todo-item v-for="(item,index) in todoList" :item="item" :index="index" @del="delItem"></todo-item>
-      </ul>
+        <!-- <todo-item v-for="(item,index) in todoList" :item="item" :index="index" @del="delItem"></todo-item>
+      </ul> -->
       <!--if,else要紧接在一起,vue会尝试复用原有元素，所以可以给元素标签+key值-->
-      <div v-if="isShow">看到啦</div>
+      <!-- <div v-if="isShow">看到啦</div>
       <div v-else>上面的看不到啦</div>
-      <div v-show="isShow">看到啦</div>
+      <div v-show="isShow">看到啦</div> -->
+      <table>
+          <row></row>
+          <li is="row"></li>
+      </table>
+      <div ref="refobj" @click="handleRefobjClick">2222</div>
+      <counter></counter>
     </div>
     <script>
       Vue.component('TodoItem',{
@@ -50,6 +56,27 @@
           methods:{
             handleItemClick(){
                 this.$emit('del',this.index);
+            }
+          },
+      });
+      Vue.component('row',{
+          data(){
+              return{
+                  mes: '1111',
+              }
+          },
+          template: '<tr><td>{{mes}}</td></tr>'
+      });
+      Vue.component('counter',{
+          data(){
+              return{
+                  number: 0,
+              }
+          },
+          template: '<div @click="handleCounterClick">计算器</div>',
+          methods: {
+            handleCounterClick(){
+                console.log(this.number++);
             }
           },
       });
@@ -78,6 +105,8 @@
         },
         component:{
             'todo-item': 'TodoItem',
+            'row': 'row',
+            'counter': 'counter',
         },
         computed:{// 计算属性:通过{{jobDetail}}即可使用，有缓存机制，应用到的值更改后才会调用计算
             jobDetail(){
@@ -163,6 +192,9 @@
             handleDivClick(){
                 // this.active = !this.active;
                 this.active = this.active === '' ? 'active' : '';
+            },
+            handleRefobjClick(){
+                console.log(this.$refs.refobj.innerHTML);
             }
         }
       });
