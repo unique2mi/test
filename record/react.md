@@ -73,3 +73,48 @@ export default App;
 
 
 
+##### 7.虚拟DOM:优点：1.性能提升了；使得跨端应用得以实现【ReactNative】
+
+- 真实DOM方法：【每次都要生成完整DOM，会耗费性能】
+   - state数据
+   - JSX模板
+   - 数据+模板：生成真实DOM
+   - 当数据发生变化=>数据+模板：重新生成真实DOM替换原有
+
+
+
+- 改进方案【性能提升不明显】
+   - state数据
+   - JSX模板
+   - 数据+模板：生成真实DOM
+   - 当数据发生变化=>数据+模板：重新生成真实DOM与原有DOM比对
+   - 替换两者比较中有差异的部分
+
+
+
+- 虚拟DOM
+   - state数据
+   - JSX模板
+   - **生成虚拟DOM**  ：js对象，用来描述真实DOM
+   - 数据+模板：生成真实DOM
+   - 当数据发生变化=>生成新的虚拟DOM
+   - 比较两个虚拟DOM的区别找出差异
+   - 直接操作DOM改变内容
+
+
+
+##### 8.虚拟DOM的diff算法- 比较原始虚拟DOM和新的虚拟DOM
+
+		- setState异步的设计
+		- 虚拟DOM同层比对
+		- key值为index的值的话，无法保持一致
+
+
+
+##### 9.生命周期函数：在某一时刻组件会自动调用执行的函数
+
+![image-20200319175836999](/Users/unique/Desktop/test/unique2mi/test/record/image/react生命周期.png)
+
+	* render生命周期函数必须存在/自行定义
+	* shouldComponentUpdate进行性能优化
+	* ajax请求放在**componentDidMount**，（render会多次执行，因此不适合放在render中；componentWillMount会有冲突影响【更高阶使用情况】，constructor也可以）
